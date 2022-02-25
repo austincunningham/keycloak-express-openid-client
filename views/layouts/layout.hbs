@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{title}}</title>
+  <meta charset="UTF-8">
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <!--<script type="text/javascript" src="semantic/out/semantic.min.js"></script>-->
+  <!--<link media="screen" rel="stylesheet" type="text/css" href="semantic/out/semantic.min.css">-->
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.6/semantic.min.js"></script>
+  <link rel="stylesheet" media="screen" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.1.6/semantic.min.css">
+  <!--<link rel="stylesheet" media="screen" href="css/index.css">-->
+
+  <link rel="shortcut icon" type="image/png" href="images/kujira.jpg">
+</head>
+<body>
+<section class="ui container">
+  {{{body}}}
+</section>
+<script>
+  $(document).ready(function () {
+    $('.ui.dropdown').dropdown({ on: 'hover' });
+  });
+</script>
+</body>
+</html>
