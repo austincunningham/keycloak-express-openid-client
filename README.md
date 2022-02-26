@@ -3,7 +3,14 @@
 
 How to use Keycloak in Express using OIDC
 
-Keycloak is [deprecating](https://www.keycloak.org/2022/02/adapter-deprecation) their client adapters (keycloak-connect) for Node and recommending openid-client as a replacement.
+## Install
+
+```bash
+npm install
+npm start
+```
+
+>**NOTE:** Keycloak is [deprecating](https://www.keycloak.org/2022/02/adapter-d**eprecation) their client adapters (keycloak-connect) for Node and recommending openid-client as a replacement.
 
 ## Setup Keycloak
 First I [download keycloak](https://www.keycloak.org/downloads) extract it and you can run it with the following command
@@ -29,13 +36,7 @@ That's it for Keycloak setup
 
 ## Setup Openid-client with Passport in Express
 
-We are going to use this [openid-client](https://www.npmjs.com/package/openid-client) and [passport](https://www.npmjs.com/package/passport) to connect to keycloak. I install the following
-```bash
-npm install passport
-npm install openid-client
-npm install express-session
-npm install express
-```
+We are going to use this [openid-client](https://www.npmjs.com/package/openid-client) and [passport](https://www.npmjs.com/package/passport) to connect to keycloak.
 
 From the Realm we need the openid-configuration can be got an endpoint 
 ```
@@ -56,10 +57,8 @@ import expressSession from 'express-session';
 const app = express();
 
 // use the issuer url here
-const keycloakIssuer = await Issuer.discover('http://localhost:8080/realms/keycloak-express')
-// don't think I should be console.logging this but its only a demo app
-// nothing bad ever happens from following the docs :)
-console.log('Discovered issuer %s %O', keycloakIssuer.issuer, keycloakIssuer.metadata);
+const keycloakIssuer = await Issuer.discover('http://localhost:8080/realms/keycloak-express');
+
 
 // client_id and client_secret can be what ever you want
 // may be worth setting them up as env vars 
