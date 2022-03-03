@@ -70,3 +70,7 @@ const client = new keycloakIssuer.Client({
     response_types: ['code'],
   });
 ```
+
+## Views and login flow
+
+![login flow](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/auslqsikfxvsfvkp1lz4.gif)
