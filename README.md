@@ -3,6 +3,8 @@
 
 How to use Keycloak in Express using OIDC
 
+>**NOTE:** Keycloak 17.0.0 was used for the this repo
+
 ## Install
 
 ```bash
