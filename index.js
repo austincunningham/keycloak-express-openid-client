@@ -1,12 +1,15 @@
 'use strict';
 
-import express from 'express';
+import express, { application } from 'express';
 import { Issuer, Strategy } from 'openid-client';
 import passport from 'passport';
 import expressSession from 'express-session';
 import { engine } from 'express-handlebars';
+// Use body-parser
+import bodyParser from 'body-parser';
 
 
+var TokenSet
 const app = express();
 
 // Register 'handelbars' extension with The Mustache Express
@@ -16,8 +19,9 @@ app.engine('hbs', engine({extname:'hbs',
 );
 app.set('view engine', 'hbs');
 
-
-const keycloakIssuer = await Issuer.discover('http://localhost:8080/realms/keycloak-express')
+// use the issuer url here
+const keycloakIssuer = await Issuer.discover("http://127.0.0.1:8080/realms/keycloak-express")
+//const keycloakIssuer = await Issuer.discover("http://"+ process.env.DOCKERHOST +":8080/realms/keycloak-express")
 // don't think I should be console.logging this but its only a demo app
 // nothing bad ever happens from following the docs :)
 console.log('Discovered issuer %s %O', keycloakIssuer.issuer, keycloakIssuer.metadata);
@@ -25,8 +29,8 @@ console.log('Discovered issuer %s %O', keycloakIssuer.issuer, keycloakIssuer.met
 const client = new keycloakIssuer.Client({
     client_id: 'keycloak-express',
     client_secret: 'long_secret-here',
-    redirect_uris: ['http://localhost:3000/auth/callback'],
-    post_logout_redirect_uris: ['http://localhost:3000/logout/callback'],
+    redirect_uris: ['http://127.0.0.1:3000/auth/callback'],
+    post_logout_redirect_uris: ['http://127.0.0.1:3000/logout/callback'],
     response_types: ['code'],
   });
 
@@ -36,19 +40,24 @@ app.use(
     secret: 'another_long_secret',
     resave: false,
     saveUninitialized: true,
-    store: memoryStore
+    store: memoryStore,
     })
 );
 
+
 app.use(passport.initialize());
 app.use(passport.authenticate('session'));
+app.use(bodyParser.json());
 
 passport.use('oidc', new Strategy({client}, (tokenSet, userinfo, done)=>{
+        console.log("tokenset:",tokenSet)
+        TokenSet = tokenSet;
         return done(null, tokenSet.claims());
     })
 )
 
 passport.serializeUser(function(user, done) {
+    console.log("user:",user)
     done(null, user);
   });
 passport.deserializeUser(function(user, done) {
@@ -87,6 +96,10 @@ app.get('/other', checkAuthenticated, (req, res) => {
     res.render('other');
 });
 
+app.get('/api/status', checkAuthenticated, (req, res) => {
+    res.status(200).json({status: "up"});
+});
+
 //unprotected route
 app.get('/',function(req,res){
     res.render('index');
@@ -94,7 +107,10 @@ app.get('/',function(req,res){
 
 // start logout request
 app.get('/logout', (req, res) => {
-    res.redirect(client.endSessionUrl());
+    res.redirect(client.endSessionUrl({
+        id_token_hint: TokenSet.id_token
+    }
+    ));
 });
 
 // logout callback
@@ -105,7 +121,8 @@ app.get('/logout/callback', (req, res) => {
     res.redirect('/');
 });
 
+
 app.listen(3000, function () {
-  console.log('Listening at http://localhost:3000');
+  console.log('Listening at http://127.0.0.1:3000');
 });
 

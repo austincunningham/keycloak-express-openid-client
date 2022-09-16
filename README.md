@@ -1,4 +1,9 @@
 
+# Prerequisites
+- node v16 >
+- npm v8 >
+- keycloak 19.0.0 >
+
 # Keycloak Express openid-client
 
 How to use Keycloak in Express using OIDC
